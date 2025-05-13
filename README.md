@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Carbon Voice OAuth2 Demo
 
-## Getting Started
+This is a Next.js application that demonstrates the OAuth2 authentication flow with Carbon Voice. The application includes a public home page and a private dashboard that can only be accessed after successful authentication.
 
-First, run the development server:
+## Features
 
+- OAuth2 authentication flow with Carbon Voice
+- Protected dashboard route
+- Token management (access token and refresh token)
+- User information retrieval
+
+## OAuth2 Flow
+
+The application implements the Authorization Code flow with the following steps:
+
+1. User clicks "Sign in with Carbon Voice" on the home page
+2. User is redirected to Carbon Voice's authorization endpoint
+3. After authorizing, user is redirected back to our application with an authorization code
+4. The application exchanges the code for an access token
+5. The access token is stored and used for subsequent API calls
+6. The refresh token can be used to obtain new access tokens when needed
+
+## API Endpoints
+
+### Carbon Voice Endpoints
+
+- Authorization: `https://rare-renewed-dogfish.ngrok-free.app/oauth/authorize`
+  - Method: GET
+  - Parameters:
+    - `client_id`: Your client ID
+    - `redirect_uri`: Your callback URL
+    - `response_type`: "code"
+
+- Token Exchange: `https://rare-renewed-dogfish.ngrok-free.app/oauth/token`
+  - Method: POST
+  - Content-Type: application/x-www-form-urlencoded
+  - Parameters:
+    - `grant_type`: "authorization_code" or "refresh_token"
+    - `client_id`: Your client ID
+    - `code`: Authorization code (for authorization_code grant)
+    - `redirect_uri`: Your callback URL (for authorization_code grant)
+    - `refresh_token`: Refresh token (for refresh_token grant)
+
+- User Info: `https://rare-renewed-dogfish.ngrok-free.app/whoami`
+  - Method: GET
+  - Headers:
+    - `Authorization`: Bearer {access_token}
+
+### Application Endpoints
+
+- Home: `/`
+  - Public page with sign-in button
+
+- Dashboard: `/dashboard`
+  - Protected page with token management
+  - Requires valid access token
+
+- API Routes:
+  - `/api/token`: Handles token exchange
+  - `/api/whoami`: Proxies user info requests
+
+## Setup
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd sign-in-cv
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Configure your environment:
+   - Update `src/constants.ts` with your credentials:
+     ```typescript
+     export const CLIENT_ID = 'your-client-id';
+     export const REDIRECT_URI = 'http://localhost:3003';
+     export const BASE_URL = 'https://rare-renewed-dogfish.ngrok-free.app';
+     ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Start the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Visit `http://localhost:3003` in your browser
 
-To learn more about Next.js, take a look at the following resources:
+## Testing with Different Client IDs
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To test the application with different client IDs:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Update the `CLIENT_ID` in `src/constants.ts`
+2. Make sure the `REDIRECT_URI` matches the one registered for your client ID
+3. Restart the development server
+4. Clear your browser's local storage to remove any existing tokens
+5. Try the authentication flow with the new client ID
 
-## Deploy on Vercel
+## Token Management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The application provides three main functions in the dashboard:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Get New Access Token**
+   - Uses the authorization code to get a new access token
+   - Stores both access token and refresh token
+
+2. **Get Refresh Token**
+   - Uses the existing refresh token to get a new access token
+   - Updates the stored tokens
+
+3. **User Info**
+   - Uses the current access token to fetch user information
+   - Displays the user data in a formatted view
+
+## Security Notes
+
+- Access tokens and refresh tokens are stored in the browser's localStorage
+- The application uses HTTPS for all API calls
+- Tokens are automatically cleared when the user is not authenticated
+- The dashboard is protected and only accessible with a valid access token
+
+## Development
+
+Built with:
+- Next.js 14
+- TypeScript
+- Tailwind CSS
+- React
