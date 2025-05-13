@@ -24,14 +24,14 @@ The application implements the Authorization Code flow with the following steps:
 
 ### Carbon Voice Endpoints
 
-- Authorization: `https://rare-renewed-dogfish.ngrok-free.app/oauth/authorize`
+- Authorization: `https://api.carbonvoice.app/oauth/authorize`
   - Method: GET
   - Parameters:
     - `client_id`: Your client ID
     - `redirect_uri`: Your callback URL
     - `response_type`: "code"
 
-- Token Exchange: `https://rare-renewed-dogfish.ngrok-free.app/oauth/token`
+- Token Exchange: `https://api.carbonvoice.app/oauth/token`
   - Method: POST
   - Content-Type: application/x-www-form-urlencoded
   - Parameters:
@@ -41,7 +41,7 @@ The application implements the Authorization Code flow with the following steps:
     - `redirect_uri`: Your callback URL (for authorization_code grant)
     - `refresh_token`: Refresh token (for refresh_token grant)
 
-- User Info: `https://rare-renewed-dogfish.ngrok-free.app/whoami`
+- User Info: `https://api.carbonvoice.app/whoami`
   - Method: GET
   - Headers:
     - `Authorization`: Bearer {access_token}
@@ -77,7 +77,7 @@ npm install
      ```typescript
      export const CLIENT_ID = 'your-client-id';
      export const REDIRECT_URI = 'http://localhost:3003';
-     export const BASE_URL = 'https://rare-renewed-dogfish.ngrok-free.app';
+     export const BASE_URL = 'https://api.carbonvoice.app';
      ```
 
 4. Start the development server:
