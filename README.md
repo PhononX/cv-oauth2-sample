@@ -63,8 +63,8 @@ The application implements the Authorization Code flow with the following steps:
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd sign-in-cv
+git clone https://github.com/PhononX/cv-oauth2-sample
+cd cv-oauth2-sample
 ```
 
 2. Install dependencies:
